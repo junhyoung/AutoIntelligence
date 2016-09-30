@@ -7,26 +7,26 @@ int init[9] = { 2, 8, 3, 1, 6, 4, 7, -1, 5 };
 int goal[9] = { 1, 2, 3, 8, -1, 4, 7, 6, 5 };
 int index[1000][2];
 
-void main(){
+void main() {
 	int* openQ[1000];
 	int* closeQ[1000];
-	for (int i = 0; i < 1000; i++){
+	for (int i = 0; i < 1000; i++) {
 		openQ[i] = new int[9];
 		closeQ[i] = new int[9];
 	}
-	
+
 	int openH = 0;
 	int openT = 0;
 	int closeT = 0;
 	openQ[openT++] = init;
 	int count = 0;
-	while (1){
+	while (1) {
 		int rightC = 0;
 		int curr[9];
 		int up[9], down[9], right[9], left[9];
 		openH = index[0][0];
 		index[0][1] = 10000;
-		for (int i = 0; i < 9; i++){
+		for (int i = 0; i < 9; i++) {
 			curr[i] = openQ[openH][i];
 			up[i] = down[i] = right[i] = left[i] = curr[i];
 			closeQ[closeT][i] = curr[i];
@@ -34,14 +34,14 @@ void main(){
 		closeT++;
 		openH++;
 		int empty;
-		for (int i = 0; i < 9; i++){
+		for (int i = 0; i < 9; i++) {
 			if (curr[i] == goal[i])
 				rightC++;
 			if (curr[i] == -1)
 				empty = i;
 		}
-		cout << "WHILE COUNT : "<< count++<<endl;
-		for (int i = 0; i < 9; i++){
+		cout << "WHILE COUNT : " << count++ << endl;
+		for (int i = 0; i < 9; i++) {
 			if (curr[i] != -1)
 				cout << curr[i] << " ";
 			else
@@ -53,39 +53,11 @@ void main(){
 		if (rightC == 9)
 			break;
 		int hureistic = 0;
-		if (empty % 3 != 0){
-			int t = left[empty];
-			left[empty] = left[empty - 1];
-			left[empty - 1] = t;
-			for (int i = 0; i < 9; i++){
-				openQ[openT][i] = left[i];
-				if (left[i] != goal[i])
-					hureistic++;
-			}
-			index[openT][1] = count + hureistic;
-			index[openT][0] = openT;
-			openT++;
-		}
-		hureistic = 0;
-		if (empty % 3 != 2){
-			int t = right[empty];
-			right[empty] = right[empty + 1];
-			right[empty + 1] = t;
-			for (int i = 0; i < 9; i++){
-				openQ[openT][i] = right[i];
-				if (right[i] != goal[i])
-					hureistic++;
-			}
-			index[openT][1] = count + hureistic;
-			index[openT][0] = openT;
-			openT++;
-		}
-		hureistic = 0;
-		if (empty >= 3){
+		if (empty >= 3) {
 			int t = up[empty];
 			up[empty] = up[empty - 3];
 			up[empty - 3] = t;
-			for (int i = 0; i < 9; i++){
+			for (int i = 0; i < 9; i++) {
 				openQ[openT][i] = up[i];
 				if (up[i] != goal[i])
 					hureistic++;
@@ -96,11 +68,26 @@ void main(){
 			openT++;
 		}
 		hureistic = 0;
-		if (empty <= 5){
+		if (empty % 3 != 0) {
+			int t = left[empty];
+			left[empty] = left[empty - 1];
+			left[empty - 1] = t;
+			for (int i = 0; i < 9; i++) {
+				openQ[openT][i] = left[i];
+				if (left[i] != goal[i])
+					hureistic++;
+			}
+			index[openT][1] = count + hureistic;
+			index[openT][0] = openT;
+			openT++;
+		}
+		
+		hureistic = 0;
+		if (empty <= 5) {
 			int t = down[empty];
 			down[empty] = down[empty + 3];
 			down[empty + 3] = t;
-			for (int i = 0; i < 9; i++){
+			for (int i = 0; i < 9; i++) {
 				openQ[openT][i] = down[i];
 
 				if (down[i] != goal[i])
@@ -110,9 +97,23 @@ void main(){
 			index[openT][0] = openT;
 			openT++;
 		}
-		for (int i = 0; i < openT; i++){
-			for (int j = i; j < openT; j++){
-				if (index[i][1]>index[j][1]){
+		hureistic = 0;
+		if (empty % 3 != 2) {
+			int t = right[empty];
+			right[empty] = right[empty + 1];
+			right[empty + 1] = t;
+			for (int i = 0; i < 9; i++) {
+				openQ[openT][i] = right[i];
+				if (right[i] != goal[i])
+					hureistic++;
+			}
+			index[openT][1] = count + hureistic;
+			index[openT][0] = openT;
+			openT++;
+		}
+		for (int i = 0; i < openT; i++) {
+			for (int j = i; j < openT; j++) {
+				if (index[i][1]>index[j][1]) {
 					int temp0 = index[i][0];
 					int temp1 = index[i][1];
 					index[i][0] = index[j][0];
