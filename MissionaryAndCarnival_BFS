@@ -1,0 +1,156 @@
+/*********************************************************
+* Name: 최 준 형
+* Student ID : 20123425
+* Program ID : HW01
+* Description: Missonary and carnival
+* Algorithm : BFS 탐색
+**********************************************************/
+#include<iostream>
+using namespace std;
+
+class MAC {
+public:
+	int LM;
+	int LC;
+	int RM;
+	int RC;
+	char boat;
+	MAC() {
+		LM = 3;
+		LC = 3;
+		RM = 0;
+		RC = 0;
+		boat = 'l';
+	}
+	MAC(const MAC& temp) {
+		LM = temp.LM;
+		LC = temp.LC;
+		RM = temp.RM;
+		RC = temp.RC;
+		boat = temp.boat;
+
+	}
+	bool goal() {
+		if (RM == 3 && RC == 3)
+			return true;
+		else
+			return false;
+	}
+	bool isInit() {
+		if (LM == 3 && LC == 3)
+			return true;
+		else
+			return false;
+	}
+
+	bool move(int M, int C, char B) {
+		
+		if (B == 'r') {
+			if (LM - M < 0 || LC - C < 0  || RM + M>3 || RC + C>3)
+				return false;
+			if (LM - M >= LC - C && RM + M >= RC + C  ) {
+				LM -= M;
+				LC -= C;
+				RM += M;
+				RC += C;
+				boat = B;
+				if (isInit())
+					return false;
+				return true;
+			}
+			else if (LM - M == 0 || LC - C == 0) {
+				LM -= M;
+				LC -= C;
+				RM += M;
+				RC += C;
+				boat = B;
+				if (isInit())
+					return false;
+				return true;
+			}
+			else
+				return false;
+		}
+		else if(B == 'l') {
+			if ( RM - M < 0 || RC - C < 0 || LM + M>3 || LC + C>3 )
+				return false;
+			if (LM + M >= LC + C && RM - M >= RC - C) {
+				LM += M;
+				LC += C;
+				RM -= M;
+				RC -= C;
+				boat = B;
+				if (isInit())
+					return false;
+				return true;
+			}
+			else if (RM - M == 0 || RC - C == 0) {
+				LM += M;
+				LC += C;
+				RM -= M;
+				RC -= C;
+				boat = B;
+				if (isInit())
+					return false;
+				return true;
+
+			}
+			else
+				return false;
+
+		}
+		return false;
+	}
+
+};
+
+void main() {
+	MAC mac;
+	MAC openQ[1000];
+	MAC closeQ[1000];
+	int openH = 0;
+	int openT = 0;
+	int closeT = 0;
+	openQ[openT++] = mac;
+	MAC curr;
+	int count = 0;
+	while (1) {
+		curr = openQ[openH++];
+		closeQ[closeT++] = curr;
+
+		cout << "WHILE COUNT : " << ++count << endl;
+		cout << "(" << curr.LM << "," << curr.LC << "," << curr.RM << "," << curr.RC << "," << curr.boat << ")" << endl;
+
+		if (curr.goal())
+			break;
+		if (curr.boat == 'l') {
+			for (int i = 0; i <= 2; i++) { // L -> R
+				for (int j = 0; j <= 2; j++) {
+					MAC temp(curr);
+
+					if (i + j > 0 && i + j <= 2) {
+						if (temp.move(i, j, 'r') && openT<1000) { // 순서 :  0,1 0,2 1,0 1,1 2,0
+							openQ[openT++] = temp;
+						}
+					}
+
+				}
+			}
+		}
+		else {
+			for (int i = 0; i <= 2; i++) { // R -> L
+				for (int j = 0; j <= 2; j++) {
+					MAC temp(curr);
+
+					if (i + j > 0 && i + j <= 2) {
+						if (temp.move(i, j, 'l') &&openT<1000) { // 순서 :  0,1 0,2 1,0 1,1 2,0
+							openQ[openT++] = temp;
+						}
+					}
+
+				}
+			}
+		}
+
+	}
+}
